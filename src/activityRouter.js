@@ -2,13 +2,15 @@ const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const ActivityService = require('./activityService')
+const { requireAuth } = require('./middleware/jwt-auth')
 
 const ActivityRouter = express.Router()
 const jsonParser = express.json()
 
 const sanitizeActivity = activity => ({
-    ...activity,
-    sproutId: xss(activity.sproutId),
+	...activity,
+	useremail: xss(activity.useremail),
+    sproutid: xss(activity.sproutid),
 	title: xss(activity.title),
     date: xss(activity.date),
     time: xss(activity.time),
@@ -26,8 +28,8 @@ ActivityRouter
 	})
     
     .post(jsonParser, (req, res, next) => {
-		const { sproutid, title, date, time, notes } = req.body
-		const newActivity = { sproutid, title, date, time, notes }
+		const { useremail, sproutid, title, date, time, notes } = req.body
+		const newActivity = { useremail, sproutid, title, date, time, notes }
 
 		// check for missing fields
 		for (const [key, value] of Object.entries(newActivity)) {
@@ -48,9 +50,9 @@ ActivityRouter
 	})
 
 ActivityRouter
-	.route('/:id')
+	.route('/:useremail')
 	.all((req, res, next) => {
-		ActivityService.getById(req.app.get('db'), req.params.id)
+		ActivityService.getByEmail(req.app.get('db'), req.params.useremail)
 			.then(activity => {
 				if (!activity) {
 					return res.status(404).json({
@@ -65,11 +67,26 @@ ActivityRouter
 	.get((req, res, next) => {
 		res.json(sanitizeActivity(res.activity))
 	})
+	ActivityRouter
+	.route('/:id')
+	.all((req, res, next) => {
+		ActivityService.getById(req.app.get('db'), req.params.id)
+			.then(activity => {
+				if (!activity) {
+					return res.status(404).json({
+						error: { message: `Activity entry doesn't exist` }
+					})
+				}
+				res.activity = activity 
+				next() 
+			})
+			.catch(next)
+	})
 	.patch(jsonParser, (req, res, next) => {
-		const { sproutId, title, date, time, notes } = req.body
-		const activityToUpdate = { sproutId, title, date, time, notes }
+		const { useremail, sproutid, title, date, time, notes } = req.body
+		const activityToUpdate = { useremail, sproutid, title, date, time, notes }
 
-		if (!sproutId) {
+		if (!sproutid) {
 			return res.status(400).json({
 				error: {
 					message: `Request body must contain a 'sproutId'`

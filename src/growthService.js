@@ -19,6 +19,12 @@ const GrowthService = {
 			.where('id', id)
 			.first()
 	},
+	getByEmail(knex, useremail) {
+		return knex
+			.from('growth')
+			.select('*')
+			.where('useremail', useremail)
+	},
 	deleteGrowth(knex, id) {
 		return knex('growth')
 			.where({ id })

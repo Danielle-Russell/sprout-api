@@ -8,8 +8,10 @@ const jsonParser = express.json()
 
 const sanitizeSprout = sprout => ({
 	...sprout,
+	useremail: xss(sprout.useremail),
 	name: xss(sprout.name),
-	age: xss(sprout.age)
+	age: xss(sprout.age),
+	image: xss(sprout.image)
 })
 
 router
@@ -23,8 +25,8 @@ router
 	})
     
     .post(jsonParser, (req, res, next) => {
-		const { name, age } = req.body
-		const newSprout = { name, age }
+		const { useremail, name, age, image } = req.body
+		const newSprout = { useremail, name, age, image }
 
 		// check for missing fields
 		for (const [key, value] of Object.entries(newSprout)) {
@@ -46,7 +48,7 @@ router
 
 router
 	.route('/:id')
-	.all((req, res, next) => {
+	/*.all((req, res, next) => {
 		SproutService.getById(req.app.get('db'), req.params.id)
 			.then(sprout => {
 				if (!sprout) {
@@ -61,10 +63,10 @@ router
 	})
 	.get((req, res, next) => {
 		res.json(sanitizeSprout(res.sprout))
-	})
+	})*/
 	.patch(jsonParser, (req, res, next) => {
-		const { name, age } = req.body
-		const sproutToUpdate = { name, age }
+		const { name, age, useremail, image } = req.body
+		const sproutToUpdate = { name, age, useremail, image }
 
 		if (!name) {
 			return res.status(400).json({
@@ -100,4 +102,24 @@ router
 			.catch(next)
 	})
 
+	router
+	.route('/:useremail')
+	.all((req, res, next) => {
+		SproutService.getByEmail(req.app.get('db'), req.params.useremail)
+			.then(sprout => {
+				if (!sprout) {
+					return res.status(404).json({
+						error: { message: `Sprout doesn't exist` }
+					})
+				}
+				res.sprout = sprout 
+				next() 
+			})
+			.catch(next)
+	})
+	.get((req, res, next) => {
+		res.json(sanitizeSprout(res.sprout))
+	})
+	
+    
 module.exports = router

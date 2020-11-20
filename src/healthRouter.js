@@ -7,8 +7,9 @@ const HealthRouter = express.Router()
 const jsonParser = express.json()
 
 const sanitizeHealth = health => ({
-    ...health,
-    sproutId: xss(health.sproutId),
+	...health,
+	useremail: xss(health.useremail),
+    sproutid: xss(health.sproutid),
 	title: xss(health.title),
     date: xss(health.date),
     time: xss(health.time),
@@ -26,8 +27,8 @@ HealthRouter
 	})
     
     .post(jsonParser, (req, res, next) => {
-		const { sproutid, title, date, time, notes } = req.body
-		const newHealth = { sproutid, title, date, time, notes }
+		const { useremail, sproutid, title, date, time, notes } = req.body
+		const newHealth = { useremail, sproutid, title, date, time, notes }
 
 		// check for missing fields
 		for (const [key, value] of Object.entries(newHealth)) {
@@ -48,9 +49,9 @@ HealthRouter
 	})
 
 HealthRouter
-	.route('/:id')
+	.route('/:useremail')
 	.all((req, res, next) => {
-		HealthService.getById(req.app.get('db'), req.params.id)
+		HealthService.getByEmail(req.app.get('db'), req.params.useremail)
 			.then(health => {
 				if (!health) {
 					return res.status(404).json({
@@ -65,11 +66,27 @@ HealthRouter
 	.get((req, res, next) => {
 		res.json(sanitizeHealth(res.health))
 	})
-	.patch(jsonParser, (req, res, next) => {
-		const { sproutId, title, date, time, notes } = req.body
-		const healthToUpdate = { sproutId, title, date, time, notes }
+	HealthRouter
 
-		if (!sproutId) {
+	.route('/:id')
+	.all((req, res, next) => {
+		HealthService.getById(req.app.get('db'), req.params.id)
+			.then(health => {
+				if (!health) {
+					return res.status(404).json({
+						error: { message: `Health entry doesn't exist` }
+					})
+				}
+				res.health= health
+				next() 
+			})
+			.catch(next)
+	})
+	.patch(jsonParser, (req, res, next) => {
+		const { useremail, sproutid, title, date, time, notes } = req.body
+		const healthToUpdate = { useremail, sproutid, title, date, time, notes }
+
+		if (!sproutid) {
 			return res.status(400).json({
 				error: {
 					message: `Request body must contain a 'sproutId'`

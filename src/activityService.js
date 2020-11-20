@@ -19,6 +19,12 @@ const ActivityService = {
 			.where('id', id)
 			.first()
 	},
+	getByEmail(knex, useremail) {
+		return knex
+			.from('activities')
+			.select('*')
+			.where('useremail', useremail)
+	},
 	deleteActivity(knex, id) {
 		return knex('activities')
 			.where({ id })

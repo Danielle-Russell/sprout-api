@@ -19,6 +19,12 @@ const HealthService = {
 			.where('id', id)
 			.first()
 	},
+	getByEmail(knex, useremail) {
+		return knex
+			.from('health')
+			.select('*')
+			.where('useremail', useremail)
+	},
 	deleteHealth(knex, id) {
 		return knex('health')
 			.where({ id })

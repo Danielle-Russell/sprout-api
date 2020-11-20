@@ -7,11 +7,13 @@ const MilestoneRouter = express.Router()
 const jsonParser = express.json()
 
 const sanitizeMilestone = mile=> ({
-    ...mile,
-    sproutId: xss(mile.sproutId),
+	...mile,
+	useremail: xss(mile.useremail),
+    sproutid: xss(mile.sproutid),
 	title: xss(mile.title),
     date: xss(mile.date),
-    notes: xss(mile.notes)
+	notes: xss(mile.notes),
+	image: xss(mile.image)
 })
 
 MilestoneRouter
@@ -25,8 +27,8 @@ MilestoneRouter
 	})
     
     .post(jsonParser, (req, res, next) => {
-		const { sproutid, title, date, notes } = req.body
-		const newMilestone= { sproutid, title, date, notes }
+		const { useremail, sproutid, title, date, notes, image } = req.body
+		const newMilestone= { useremail, sproutid, title, date, notes, image }
 
 		// check for missing fields
 		for (const [key, value] of Object.entries(newMilestone)) {
@@ -47,9 +49,9 @@ MilestoneRouter
 	})
 
 MilestoneRouter
-	.route('/:id')
+	.route('/:useremail')
 	.all((req, res, next) => {
-		MilestoneService.getById(req.app.get('db'), req.params.id)
+		MilestoneService.getByEmail(req.app.get('db'), req.params.useremail)
 			.then(mile => {
 				if (!mile) {
 					return res.status(404).json({
@@ -64,11 +66,27 @@ MilestoneRouter
 	.get((req, res, next) => {
 		res.json(sanitizeMilestone(res.mile))
 	})
-	.patch(jsonParser, (req, res, next) => {
-		const { sproutId, title, date, notes } = req.body
-		const milestoneToUpdate = { sproutId, title, date, notes }
+	MilestoneRouter
 
-		if (!sproutId) {
+	.route('/:id')
+	.all((req, res, next) => {
+		MilestoneService.getById(req.app.get('db'), req.params.id)
+			.then(mile => {
+				if (!mile) {
+					return res.status(404).json({
+						error: { message: `Milestone entry doesn't exist` }
+					})
+				}
+				res.mile = mile
+				next() 
+			})
+			.catch(next)
+	})
+	.patch(jsonParser, (req, res, next) => {
+		const { useremail, sproutid, title, date, notes, image } = req.body
+		const milestoneToUpdate = { useremail, sproutid, title, date, notes, image }
+
+		if (!sproutid) {
 			return res.status(400).json({
 				error: {
 					message: `Request body must contain a 'sproutId'`

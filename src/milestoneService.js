@@ -19,6 +19,12 @@ const MilestoneService = {
 			.where('id', id)
 			.first()
 	},
+	getByEmail(knex, useremail) {
+		return knex
+			.from('milestones')
+			.select('*')
+			.where('useremail', useremail)
+	},
 	deleteMilestone(knex, id) {
 		return knex('milestones')
 			.where({ id })

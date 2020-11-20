@@ -19,6 +19,12 @@ const SproutService = {
 			.where('id', id)
 			.first()
 	},
+	getByEmail(knex, useremail) {
+		return knex
+			.from('sprouts')
+			.select('*')
+			.where('useremail', useremail)
+	},
 	deleteSprout(knex, id) {
 		return knex('sprouts')
 			.where({ id })

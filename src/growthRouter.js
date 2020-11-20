@@ -7,8 +7,9 @@ const GrowthRouter = express.Router()
 const jsonParser = express.json()
 
 const sanitizeGrowth = growth => ({
-    ...growth,
-    sproutId: xss(growth.sproutId),
+	...growth,
+	useremail: xss(growth.useremail),
+    sproutid: xss(growth.sproutid),
 	title: xss(growth.title),
     date: xss(growth.date),
     number: xss(growth.number),
@@ -26,8 +27,8 @@ GrowthRouter
 	})
     
     .post(jsonParser, (req, res, next) => {
-		const { sproutid, title, date, number, units } = req.body
-		const newGrowth = { sproutid, title, date, number, units }
+		const { useremail, sproutid, title, date, number, units } = req.body
+		const newGrowth = { useremail, sproutid, title, date, number, units }
 
 		// check for missing fields
 		for (const [key, value] of Object.entries(newGrowth)) {
@@ -48,9 +49,9 @@ GrowthRouter
 	})
 
 GrowthRouter
-	.route('/:id')
+	.route('/:useremail')
 	.all((req, res, next) => {
-		GrowthService.getById(req.app.get('db'), req.params.id)
+		GrowthService.getByEmail(req.app.get('db'), req.params.useremail)
 			.then(growth => {
 				if (!growth) {
 					return res.status(404).json({
@@ -65,11 +66,26 @@ GrowthRouter
 	.get((req, res, next) => {
 		res.json(sanitizeGrowth(res.growth))
 	})
+	GrowthRouter
+	.route('/:id')
+	.all((req, res, next) => {
+		GrowthService.getById(req.app.get('db'), req.params.id)
+			.then(growth => {
+				if (!growth) {
+					return res.status(404).json({
+						error: { message: `Growth entry doesn't exist` }
+					})
+				}
+				res.growth = growth
+				next() 
+			})
+			.catch(next)
+	})
 	.patch(jsonParser, (req, res, next) => {
-		const { sproutId, title, date, number, units } = req.body
-		const growthToUpdate = { sproutId, title, date,  number, units }
+		const { useremail, sproutid, title, date, number, units } = req.body
+		const growthToUpdate = { useremail, sproutid, title, date,  number, units }
 
-		if (!sproutId) {
+		if (!sproutid) {
 			return res.status(400).json({
 				error: {
 					message: `Request body must contain a 'sproutId'`
