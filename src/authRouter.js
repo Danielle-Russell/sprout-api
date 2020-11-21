@@ -1,7 +1,6 @@
 const path = require('path')
 const express = require('express')
 const AuthService = require('./authService')
-const { response } = require('./app')
 const bcrypt = require('bcryptjs')
 
 

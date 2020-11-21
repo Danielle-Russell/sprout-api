@@ -27,9 +27,6 @@ app.use(function (req, res, next) {
 });
 
 
-app.use("/", (req, res) => {
-  res.send('hello world')
-})
 
 app.use("/api/sprouts", sprouts)
 
