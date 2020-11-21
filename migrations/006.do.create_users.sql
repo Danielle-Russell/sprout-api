@@ -3,5 +3,5 @@ CREATE TABLE users (
  firstname TEXT NOT NULL,
  lastname TEXT NOT NULL,
  email TEXT UNIQUE,
- password CHAR(60),
+ password CHAR(60)
 ) 
