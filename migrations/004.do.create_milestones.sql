@@ -3,7 +3,7 @@ CREATE TABLE milestones (
     sproutid INTEGER REFERENCES sprouts(id) ON DELETE CASCADE NOT NULL,
     title TEXT NOT NULL,
     date TEXT NOT NULL,
-        notes TEXT NOT NULL,
-        useremail TEXT
-        
+        notes TEXT,
+        useremail TEXT,
+        image TEXT
 )
