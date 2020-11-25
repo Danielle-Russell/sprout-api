@@ -12,6 +12,7 @@ const healthRouter = require('./healthRouter')
 const milestoneRouter = require('./milestoneRouter')
 const growthRouter = require('./growthRouter')
 const authRouter = require('./authRouter')
+var bodyParser = require('body-parser')
 
 
 app.use(cors())
