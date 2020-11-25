@@ -16,6 +16,8 @@ const authRouter = require('./authRouter')
 
 app.use(cors())
 
+app.use(express.limit('4M'));
+
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
