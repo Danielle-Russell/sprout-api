@@ -16,7 +16,6 @@ const authRouter = require('./authRouter')
 
 app.use(cors())
 
-app.use(express.limit('4M'));
 
 
 app.use(function (req, res, next) {
@@ -29,6 +28,7 @@ app.use(function (req, res, next) {
 });
 
 
+app.use(express.limit('4M'));
 
 app.use("/api/sprouts", sprouts)
 
