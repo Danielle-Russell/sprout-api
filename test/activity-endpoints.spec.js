@@ -8,7 +8,7 @@ describe.only('Activity Endpoints', function() {
     before('make knex instance', () => {
       db = knex({
         client: 'pg',
-        connection: process.env.TEST_DB_URL,
+        connection: process.env.TEST_DATABASE_URL,
       })
       app.set('db', db)
     })
@@ -59,12 +59,5 @@ describe.only('Activity Endpoints', function() {
                        .get('/api/activities')
                        .expect(200, testActivity)
                    })
-                   it('GET /activities/:activity_id responds with 200 and the specified activity', () => {
-                    const activityId = 2
-                    const expectedActivity = testActivity[activityId - 1]
-                    return supertest(app)
-                      .get(`/api/activities/${activityId}`)
-                      .expect(200, expectedActivity)
-           })
         })
   })

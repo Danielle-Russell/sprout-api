@@ -7,16 +7,6 @@ const bcrypt = require('bcryptjs')
 const AuthRouter = express.Router()
 const jsonParser = express.json()
 
-
-
-/*const sanitizeUser = user => ({
-    ...user,
-    id: xss(user.id),
-	firstname: xss(user.firstname),
-    lastname: xss(user.lastname),
-    email: xss(user.email),
-    password: xss(user.password)
-})*/
 AuthRouter
 .post('/', jsonParser, (req, res, next) => {
     const { password, firstname, lastname, email } = req.body
@@ -27,7 +17,6 @@ for (const field of ['firstname', 'lastname', 'email', 'password'])
           error: `Missing '${field}' in request body`
         })
 
-    // TODO: check user_name doesn't start with spaces
 
     const passwordError = AuthService.validatePassword(password)
 

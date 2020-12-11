@@ -23,7 +23,6 @@ router
 			})
 			.catch(next)
 	})
-    
     .post(jsonParser, (req, res, next) => {
 		const { useremail, name, age, image } = req.body
 		const newSprout = { useremail, name, age, image }
