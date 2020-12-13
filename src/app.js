@@ -35,9 +35,6 @@ app.use(express.urlencoded({limit: '50mb'}));
 
 app.use("/api/sprouts", sprouts)
 
-
-app.use("/api/sprouts", sprouts)
-
 app.use("/api/activities", activityRouter)
 
 app.use("/api/health", healthRouter)

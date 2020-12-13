@@ -183,7 +183,7 @@ for (const field of ['firstname', 'lastname', 'email', 'password'])
       })
       .catch(next)
   })
-  *AuthRouter
+  AuthRouter
 	.route('/:email')
 	.get((req, res, next) => {
 		AuthService.getUserWithUserName(req.app.get('db'))
