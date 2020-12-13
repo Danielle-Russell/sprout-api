@@ -1,26 +1,62 @@
-# Express Boilerplate!
+# Sprout API Documentation
 
-This is a boilerplate project used for starting new projects!
+<hr>
 
-## Set up
+### User Accounts and Logins
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+#### POST api/users
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+| Field  | Required           | Description |
+| --------- | ------------------- | --------- |
+| firstname |      Yes               |  |
+| lastname   | Yes | | 
+| email  | Yes | Must be a valid email that is not currently in use | 
+| password  | Yes | Must be >= 8 characters | 
 
-## Scripts
+#### POST api/users/login
 
-Start the application `npm start`
+Takes username and password, generating a unique token if matched in the system. 
 
-Start nodemon for the application `npm run dev`
+#### GET api/users/:useremail
 
-Run the tests `npm test`
+Get user email, firstname and lastname
 
-## Deploying
+#### DELETE api/users/:useremail
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+Delete user
+
+
+### TYPES - Activities, Growth, Milestones, Health
+
+#### GET /api/<em>type</em>
+Returns all
+
+#### GET /api/<em>type</em>/:useremail 
+
+Returns a list of all logs in specificed type logged for a certain user account
+
+#### GET api/<em>type</em>/:id
+
+Returns a list of all logs for a particular profile within a user account, in this case by the "sprout id".
+
+
+#### POST /api/<em>type</em> 
+
+| Field  | Required           | Description | Type |
+| --------- | ------------------- | --------- | ------- |
+| useremail |      Yes               | Relates to previously created user account    | All |
+| sproutid    | Yes | Profile ID for previously created "sprout" | All |
+| title   | Yes | Type of activity (Feed, Diaper, Sleep) | All |
+| date   | Yes | YYYY-MM-DD | All |
+| time    | Yes | HH:mm | Activities, growth, health |
+| notes    | Yes |  | All |
+
+#### PATCH api/<em>type</em>/:id
+
+Update log
+
+#### DELETE api/<em>type</em>/:id
+
+Delete log
+
+
