@@ -1,3 +1,11 @@
+## Summary
+
+The API for my sprout client has get, post, patch, and delete endpoints for each PostgreSQL table. Each is linked to a useremail to assign inputs to user accounts.
+
+## Technologies Used
+
+This API was built using Node.js with Express and Express.Router. The database was built using PostgreSQL. I used JWT and bCrypt plugins for user logins.
+
 # Sprout API Documentation
 
 ## Live Link: https://sprout-app-mu.vercel.app/
