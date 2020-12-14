@@ -1,5 +1,7 @@
 # Sprout API Documentation
 
+## Live Link: https://sprout-app-mu.vercel.app/
+
 <hr>
 
 ### User Accounts and Logins
