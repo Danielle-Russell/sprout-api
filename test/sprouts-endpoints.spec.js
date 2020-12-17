@@ -83,13 +83,14 @@ describe.only("Sprouts Endpoints", function () {
 });
 describe(`POST /api/sprouts`, () => {
   it(`creates a sprout, responding with 201 and the new sprout`, () => {
-    const newSprout = {
+    const newSprout =  {
       id: 1,
       name: "Benjamin",
       age: "10/10/2019",
       image: "",
-      useremail: "daniellerussell714@gmail.com",
-    };
+      useremail: "daniellerussell714@gmail.com"
+    }
+  
     return supertest(app)
       .post("/api/sprouts")
       .send(newSprout)
@@ -99,10 +100,23 @@ describe(`POST /api/sprouts`, () => {
         expect(res.body.age).to.eql(newSprout.age);
         expect(res.body.useremail).to.eql(newSprout.useremail);
         expect(res.body).to.have.property("id");
-        expect(res.headers.location).to.eql(`/api/sprouts/1`);
+        //expect(res.headers.location).to.eql(`/api/sprouts/daniellerussell714@gmail.com`);
       })
       .then((res) =>
-        supertest(app).get(`/api/sprouts/1`).expect(res.body)
+        supertest(app).get(`/api/sprouts/daniellerussell714@gmail.com`).expect({
+          '0': {
+            id: 1,
+            name: 'Benjamin',
+            age: '10/10/2019',
+            useremail: 'daniellerussell714@gmail.com',
+            image: ''
+          },
+          useremail: '',
+          name: '',
+          age: '',
+          image: ''
+        }
+        )
       );
   });
 });

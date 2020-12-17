@@ -12,13 +12,6 @@ const SproutService = {
 			.returning('*')
 			.then(rows => rows[0])
 	},
-	getById(knex, id) {
-		return knex
-			.from('sprouts')
-			.select('*')
-			.where('id', id)
-		
-	},
 	getByEmail(knex, useremail) {
 		return knex
 			.from('sprouts')

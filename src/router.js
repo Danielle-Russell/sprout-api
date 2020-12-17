@@ -47,22 +47,6 @@ router
 
 router
 	.route('/:id')
-	.all((req, res, next) => {
-		SproutService.getById(req.app.get('db'), req.params.id)
-			.then(sprout => {
-				if (!sprout) {
-					return res.status(404).json({
-						error: { message: `Sprout doesn't exist` }
-					})
-				}
-				res.sprout = sprout 
-				next() 
-			})
-			.catch(next)
-	})
-	.get((req, res, next) => {
-		res.json(sanitizeSprout(res.sprout))
-	})
 	.patch(jsonParser, (req, res, next) => {
 		const { name, age, useremail, image } = req.body
 		const sproutToUpdate = { name, age, useremail, image }
