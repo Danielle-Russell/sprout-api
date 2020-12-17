@@ -17,7 +17,7 @@ const SproutService = {
 			.from('sprouts')
 			.select('*')
 			.where('id', id)
-			.first()
+		
 	},
 	getByEmail(knex, useremail) {
 		return knex

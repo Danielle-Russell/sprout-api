@@ -1,21 +1,21 @@
-const path = require('path')
-const express = require('express')
-const AuthService = require('./authService')
-const bcrypt = require('bcryptjs')
+const path = require('path');
+const express = require('express');
+const AuthService = require('./authService');
+const bcrypt = require('bcryptjs');
 
 
-const AuthRouter = express.Router()
-const jsonParser = express.json()
+const AuthRouter = express.Router();
+const jsonParser = express.json();
 
 AuthRouter
 .post('/', jsonParser, (req, res, next) => {
-    const { password, firstname, lastname, email } = req.body
+    const { password, firstname, lastname, email } = req.body;
 
 for (const field of ['firstname', 'lastname', 'email', 'password'])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
-        })
+        });
 
 
     const passwordError = AuthService.validatePassword(password)

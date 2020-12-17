@@ -47,7 +47,7 @@ router
 
 router
 	.route('/:id')
-	/*.all((req, res, next) => {
+	.all((req, res, next) => {
 		SproutService.getById(req.app.get('db'), req.params.id)
 			.then(sprout => {
 				if (!sprout) {
@@ -62,7 +62,7 @@ router
 	})
 	.get((req, res, next) => {
 		res.json(sanitizeSprout(res.sprout))
-	})*/
+	})
 	.patch(jsonParser, (req, res, next) => {
 		const { name, age, useremail, image } = req.body
 		const sproutToUpdate = { name, age, useremail, image }
