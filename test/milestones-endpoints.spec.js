@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const knex = require('knex')
 const app = require('../src/app')
 
-describe.only('Activity Endpoints', function() {
+describe.only('Milestone Endpoints', function() {
     let db
   
     before('make knex instance', () => {
@@ -15,30 +15,30 @@ describe.only('Activity Endpoints', function() {
   
     after('disconnect from db', () => db.destroy())
   
-    before('cleanup', () => db.raw('TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;'));
+    before('cleanup', () => db.raw('TRUNCATE TABLE milestones, sprouts RESTART IDENTITY CASCADE;'));
 
-    afterEach('cleanup', () => db.raw('TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;'));
+    afterEach('cleanup', () => db.raw('TRUNCATE TABLE milestones, sprouts RESTART IDENTITY CASCADE;'));
 
-describe("GET api/activities/", () => {
-    context('Given there are activities in the database', () => {
+describe("GET api/milestones/", () => {
+    context('Given there are milestones in the database', () => {
     
-            const testActivity = [
+            const testMile = [
               {
                 id: 1,
                  sproutid: "2",
-                 title: 'First test activity!',
+                 title: 'First test milestone!',
                  date: "11-23-2020",
-                 time: "06:00",
-                 notes: "First test activity",
+                 notes: "First test milestone",
+                 image: "",
                  useremail: "daniellerussell714@gmail.com"
                },
                {
                 id: 2,
                  sproutid: "2",
-                 title: 'Second test activity!',
+                 title: 'Second test milestone!',
                  date: "11-23-2020",
-                 time: "06:00",
-                 notes: "Second test activity",
+                 image: "",
+                 notes: "Second test milestone",
                  useremail: "indyshadow@gmail.com"
                }
 
@@ -60,35 +60,35 @@ describe("GET api/activities/", () => {
                   .insert(testSprout)
               })
  
-             beforeEach('insert activities', () => {
+             beforeEach('insert milestone', () => {
                return db
-                 .into('activities')
-                 .insert(testActivity)
+                 .into('milestones')
+                 .insert(testMile)
              })
 
 
-             it('GET /api/activities responds with 200 and all of the activities', () => {
+             it('GET /api/milestones responds with 200 and all of the milestones', () => {
                     return supertest(app)
-                       .get('/api/activities')
-                       .expect(200, testActivity)
+                       .get('/api/milestones')
+                       .expect(200, testMile)
                    })
-                   it("GET /api/activities/:useremail responds with 200 and the specified activity", () => {
+                   it("GET /api/milestonese/:useremail responds with 200 and the specified milestonese", () => {
                     return supertest(app)
-                      .get("/api/activities/indyshadow@gmail.com")
+                      .get("/api/milestones/indyshadow@gmail.com")
                       .expect(200, {
                         0: {
                           id: 2,
                            sproutid: 2,
-                           title: 'Second test activity!',
+                           title: 'Second test milestone!',
                            date: "11-23-2020",
-                           time: "06:00",
-                           notes: "Second test activity",
+                           image: "",
+                           notes: "Second test milestone",
                            useremail: "indyshadow@gmail.com"
                          },
                         useremail: "",
                         title: "",
                         date: "",
-                        time: "",
+                        image: "",
                         sproutid: "",
                         notes: ""
                       });
@@ -98,7 +98,7 @@ describe("GET api/activities/", () => {
   })
 
   
-  describe(`POST /api/activities`, () => {
+  describe(`POST /api/milestones`, () => {
 
     const testSprout = {
                 
@@ -119,65 +119,65 @@ describe("GET api/activities/", () => {
 
     
 
-    it(`creates an activity, responding with 201 and the new activity`, () => {
-      const testActivity = 
+    it(`creates a milestone, responding with 201 and the new record`, () => {
+      const testMile = 
         {
           id: 1,
            sproutid: "5",
-           title: 'First test activity!',
+           title: 'First test milestone!',
            date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
+           image: "",
+           notes: "First test milestone",
            useremail: "daniellerussell714@gmail.com"
          }
       
 
       return supertest(app)
-        .post("/api/activities")
-        .send(testActivity)
+        .post("/api/milestones")
+        .send(testMile)
         .expect(201)
         .expect((res) => {
-          expect(res.body.title).to.eql(testActivity.title);
-          expect(res.body.date).to.eql(testActivity.date);
-          expect(res.body.time).to.eql(testActivity.time);
-          expect(res.body.notes).to.eql(testActivity.notes);
-          expect(res.body.useremail).to.eql(testActivity.useremail);
+          expect(res.body.title).to.eql(testMile.title);
+          expect(res.body.date).to.eql(testMile.date);
+          expect(res.body.image).to.eql(testMile.image);
+          expect(res.body.notes).to.eql(testMile.notes);
+          expect(res.body.useremail).to.eql(testMile.useremail);
           expect(res.body).to.have.property("id");
           //expect(res.headers.location).to.eql(`/api/sprouts/daniellerussell714@gmail.com`);
         })
         .then((res) =>
           supertest(app)
-            .get(`/api/activities/daniellerussell714@gmail.com`)
+            .get(`/api/milestones/daniellerussell714@gmail.com`)
             .expect( {
               "0":   {
               id: 1,
                sproutid: 5,
-               title: 'First test activity!',
+               title: 'First test milestone!',
                date: "11-23-2020",
-               time: "06:00",
-               notes: "First test activity",
+               image: "",
+               notes: "First test milestone",
                useremail: "daniellerussell714@gmail.com"
              },
                "date": "",
              "notes": "",
               "sproutid": "",
-              "time": "",
+              "image": "",
               "title": "",
                "useremail": ""
       })
         );
     });
   });
-  describe(`PATCH /api/activities/:id`, () => {
-    context("Given there are activities in the database", () => {
-      const testActivity = [
+  describe(`PATCH /api/milestones/:id`, () => {
+    context("Given there are milestone records in the database", () => {
+      const testMile = [
         {
           id: 1,
            sproutid: "2",
-           title: 'First test activity!',
+           title: 'First test milestone!',
            date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
+           image: "",
+           notes: "First test milestone",
            useremail: "daniellerussell714@gmail.com"
          }
       ]
@@ -198,46 +198,46 @@ describe("GET api/activities/", () => {
             .insert(testSprout)
         })
 
-       beforeEach('insert activities', () => {
+       beforeEach('insert milestone record', () => {
          return db
-           .into('activities')
-           .insert(testActivity)
+           .into('milestones')
+           .insert(testMile)
        })
 
 
-      it("responds with 204 and updates the activity", () => {
+      it("responds with 204 and updates the milestones record", () => {
         const idToUpdate = 1;
-        const updateActivity =  {
+        const updateMile =  {
           id: 1,
            sproutid: "2",
-           title: 'First test activity updated!',
+           title: 'First test milestone updated!',
            date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
+           image: "",
+           notes: "First test milestone",
            useremail: "daniellerussell714@gmail.com"
          }
 
         return supertest(app)
-          .patch(`/api/activities/${idToUpdate}`)
-          .send(updateActivity)
+          .patch(`/api/milestones/${idToUpdate}`)
+          .send(updateMile)
           .expect(204)
           .then((res) =>
             supertest(app)
-              .get(`/api/activities/daniellerussell714@gmail.com`)
+              .get(`/api/milestones/daniellerussell714@gmail.com`)
               .expect({
                 0: {
                   id: 1,
                    sproutid: 2,
-                   title: 'First test activity updated!',
+                   title: 'First test milestone updated!',
                    date: "11-23-2020",
-                   time: "06:00",
-                   notes: "First test activity",
+                   image: "",
+                   notes: "First test milestone",
                    useremail: "daniellerussell714@gmail.com"
                  },
                 useremail: "",
                 title: "",
                 date: "",
-                time: "",
+                image: "",
                 sproutid: "",
                 notes: ""
                 
@@ -246,15 +246,15 @@ describe("GET api/activities/", () => {
       });
     });
   });
-  describe(`DELETE /api/activities/:id`, () => {
-    const testActivity = [
+  describe(`DELETE /api/milestones/:id`, () => {
+    const testMile = [
       {
         id: 1,
          sproutid: "2",
-         title: 'First test activity!',
+         title: 'First test milestone!',
          date: "11-23-2020",
-         time: "06:00",
-         notes: "First test activity",
+         image: "",
+         notes: "First test milestone",
          useremail: "daniellerussell714@gmail.com"
        }
     ]
@@ -277,20 +277,20 @@ describe("GET api/activities/", () => {
           .insert(testSprout)
       })
 
-     beforeEach('insert activities', () => {
+     beforeEach('insert milestone record', () => {
        return db
-         .into('activities')
-         .insert(testActivity)
+         .into('milestones')
+         .insert(testMile)
      })
-      it("responds with 204 and removes the activity", () => {
+      it("responds with 204 and removes the milestone record", () => {
         const idToRemove = 1;
         return supertest(app)
-          .delete(`/api/activities/${idToRemove}`)
+          .delete(`/api/milestones/${idToRemove}`)
           .expect(204)
           .then((res) =>
             supertest(app)
-              .get(`/api/activities/daniellerussell714@gmail.com`)
-              .expect({ useremail: "", title: "", date: "", time: "", notes: "", sproutid: "" })
+              .get(`/api/milestones/daniellerussell714@gmail.com`)
+              .expect({ useremail: "", title: "", date: "", image: "", notes: "", sproutid: "" })
           );
       });
     });

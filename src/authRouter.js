@@ -8,6 +8,13 @@ const AuthRouter = express.Router();
 const jsonParser = express.json();
 
 AuthRouter
+.get('/', (req, res, next) => {
+	AuthService.getAllUsers(req.app.get('db'))
+		.then(user => {
+			res.json(user.map(AuthService.serializeUser))
+		})
+		.catch(next)
+})
 .post('/', jsonParser, (req, res, next) => {
     const { password, firstname, lastname, email } = req.body;
 
@@ -55,29 +62,7 @@ for (const field of ['firstname', 'lastname', 'email', 'password'])
 	  .catch(next)
 	})
   
-/*AuthRouter
-	.route('/:email')
-	.get((req, res, next) => {
-		AuthService.getUserWithUserName(req.app.get('db'))
-			.then(user => {
-				res.json(user.map(AuthService.serializeUser))
-			})
-			.catch(next)
-	})
-	.patch(jsonParser, (req, res, next) => {
-		const { firstname, lastname, email, password } = req.body
-		const userToUpdate = { firstname, lastname, email, password }
-      
-		AuthService.updateUser(
-			req.app.get('db'),
-			req.params.password,
-			userToUpdate
-		)
-			.then(() => {
-				res.status(204).end()
-			})
-			.catch(next)
-	})
+
 
     /*
     AuthRouter.post(jsonParser, (req, res, next) => {
@@ -183,7 +168,7 @@ for (const field of ['firstname', 'lastname', 'email', 'password'])
       })
       .catch(next)
   })
-  AuthRouter
+  /*AuthRouter
 	.route('/:email')
 	.get((req, res, next) => {
 		AuthService.getUserWithUserName(req.app.get('db'))
@@ -200,7 +185,7 @@ for (const field of ['firstname', 'lastname', 'email', 'password'])
 		.catch(next)
 })
   
-  
+  */
 
 
 	

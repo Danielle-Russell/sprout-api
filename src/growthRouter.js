@@ -41,6 +41,9 @@ GrowthRouter
 
 		GrowthService.insertGrowth(req.app.get('db'), newGrowth)
 			.then(growth => {
+				if (res.status === 500) {
+					throw new Error ("error")
+				}
 				res.status(201)
 					.location(path.posix.join(req.originalUrl, `${growth.id}`))
 					.json(sanitizeGrowth(growth))
