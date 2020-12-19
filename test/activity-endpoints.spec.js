@@ -143,7 +143,6 @@ describe("GET api/activities/", () => {
           expect(res.body.notes).to.eql(testActivity.notes);
           expect(res.body.useremail).to.eql(testActivity.useremail);
           expect(res.body).to.have.property("id");
-          //expect(res.headers.location).to.eql(`/api/sprouts/daniellerussell714@gmail.com`);
         })
         .then((res) =>
           supertest(app)

@@ -100,7 +100,6 @@ describe.only("Sprouts Endpoints", function () {
           expect(res.body.age).to.eql(newSprout.age);
           expect(res.body.useremail).to.eql(newSprout.useremail);
           expect(res.body).to.have.property("id");
-          //expect(res.headers.location).to.eql(`/api/sprouts/daniellerussell714@gmail.com`);
         })
         .then((res) =>
           supertest(app)

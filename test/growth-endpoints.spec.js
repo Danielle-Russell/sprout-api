@@ -131,7 +131,6 @@ describe.only("Growth Endpoints", function () {
           expect(res.body.units).to.eql(testGrowth.units);
           expect(res.body.number).to.eql(testGrowth.number);
           expect(res.body).to.have.property("id");
-          //expect(res.headers.location).to.eql(`/api/sprouts/daniellerussell714@gmail.com`);
         })
         .then((res) =>
           supertest(app)
