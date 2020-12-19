@@ -1,136 +1,117 @@
-const { expect } = require('chai')
-const knex = require('knex')
-const app = require('../src/app')
+const { expect } = require("chai");
+const knex = require("knex");
+const app = require("../src/app");
 
-describe.only('Health Endpoints', function() {
-    let db
-  
-    before('make knex instance', () => {
-      db = knex({
-        client: 'pg',
-        connection: process.env.TEST_DATABASE_URL,
-      })
-      app.set('db', db)
-    })
-  
-    after('disconnect from db', () => db.destroy())
-  
-    before('cleanup', () => db.raw('TRUNCATE TABLE health, sprouts RESTART IDENTITY CASCADE;'));
+describe.only("Health Endpoints", function () {
+  let db;
 
-    afterEach('cleanup', () => db.raw('TRUNCATE TABLE health, sprouts RESTART IDENTITY CASCADE;'));
+  before("make knex instance", () => {
+    db = knex({
+      client: "pg",
+      connection: process.env.TEST_DATABASE_URL,
+    });
+    app.set("db", db);
+  });
 
-describe("GET api/health/", () => {
-    context('Given there are health records in the database', () => {
-    
-            const testHealth = [
-              {
-                id: 1,
-                 sproutid: "2",
-                 title: 'First test health!',
-                 date: "11-23-2020",
-                 time: "06:00",
-                 notes: "First test health",
-                 useremail: "daniellerussell714@gmail.com"
-               },
-               {
-                id: 2,
-                 sproutid: "2",
-                 title: 'Second test health!',
-                 date: "11-23-2020",
-                 time: "06:00",
-                 notes: "Second test health",
-                 useremail: "indyshadow@gmail.com"
-               }
+  after("disconnect from db", () => db.destroy());
 
-            ]
+  before("cleanup", () =>
+    db.raw("TRUNCATE TABLE health, sprouts RESTART IDENTITY CASCADE;")
+  );
 
-               const testSprout = {
-                
-                  id: 2,
-                  name: "Christian",
-                  age: "10/10/2019",
-                  image: "",
-                  useremail: "daniellerussell714@gmail.com"
-                 
-               }
-        
-               beforeEach('insert sprout', () => {
-                return db
-                  .into('sprouts')
-                  .insert(testSprout)
-              })
- 
-             beforeEach('insert health record', () => {
-               return db
-                 .into('health')
-                 .insert(testHealth)
-             })
+  afterEach("cleanup", () =>
+    db.raw("TRUNCATE TABLE health, sprouts RESTART IDENTITY CASCADE;")
+  );
 
+  describe("GET api/health/", () => {
+    context("Given there are health records in the database", () => {
+      const testHealth = [
+        {
+          id: 1,
+          sproutid: "2",
+          title: "First test health!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test health",
+          useremail: "daniellerussell714@gmail.com",
+        },
+        {
+          id: 2,
+          sproutid: "2",
+          title: "Second test health!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "Second test health",
+          useremail: "indyshadow@gmail.com",
+        },
+      ];
 
-             it('GET /api/health responds with 200 and all of the health records', () => {
-                    return supertest(app)
-                       .get('/api/health')
-                       .expect(200, testHealth)
-                   })
-                   it("GET /api/health/:useremail responds with 200 and the specified health", () => {
-                    return supertest(app)
-                      .get("/api/health/indyshadow@gmail.com")
-                      .expect(200, {
-                        0: {
-                          id: 2,
-                           sproutid: 2,
-                           title: 'Second test health!',
-                           date: "11-23-2020",
-                           time: "06:00",
-                           notes: "Second test health",
-                           useremail: "indyshadow@gmail.com"
-                         },
-                        useremail: "",
-                        title: "",
-                        date: "",
-                        time: "",
-                        sproutid: "",
-                        notes: ""
-                      });
-                  });
-               
-        })
-  })
+      const testSprout = {
+        id: 2,
+        name: "Christian",
+        age: "10/10/2019",
+        image: "",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
-  
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
+
+      beforeEach("insert health record", () => {
+        return db.into("health").insert(testHealth);
+      });
+
+      it("GET /api/health responds with 200 and all of the health records", () => {
+        return supertest(app).get("/api/health").expect(200, testHealth);
+      });
+      it("GET /api/health/:useremail responds with 200 and the specified health", () => {
+        return supertest(app)
+          .get("/api/health/indyshadow@gmail.com")
+          .expect(200, {
+            0: {
+              id: 2,
+              sproutid: 2,
+              title: "Second test health!",
+              date: "11-23-2020",
+              time: "06:00",
+              notes: "Second test health",
+              useremail: "indyshadow@gmail.com",
+            },
+            useremail: "",
+            title: "",
+            date: "",
+            time: "",
+            sproutid: "",
+            notes: "",
+          });
+      });
+    });
+  });
+
   describe(`POST /api/health`, () => {
-
     const testSprout = {
-                
       id: 5,
       name: "Christian",
       age: "10/10/2019",
       image: "",
-      useremail: "daniellerussell714@gmail.com"
-     
-   }
+      useremail: "daniellerussell714@gmail.com",
+    };
 
-
-       beforeEach('insert sprout', () => {
-      return db
-        .into('sprouts')
-        .insert(testSprout)
-    })
-
-    
+    beforeEach("insert sprout", () => {
+      return db.into("sprouts").insert(testSprout);
+    });
 
     it(`creates a health record, responding with 201 and the new record`, () => {
-      const testHealth = 
-        {
-          id: 1,
-           sproutid: "5",
-           title: 'First test health!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test health",
-           useremail: "daniellerussell714@gmail.com"
-         }
-      
+      const testHealth = {
+        id: 1,
+        sproutid: "5",
+        title: "First test health!",
+        date: "11-23-2020",
+        time: "06:00",
+        notes: "First test health",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
       return supertest(app)
         .post("/api/health")
@@ -147,23 +128,23 @@ describe("GET api/health/", () => {
         .then((res) =>
           supertest(app)
             .get(`/api/health/daniellerussell714@gmail.com`)
-            .expect( {
-              "0":   {
-              id: 1,
-               sproutid: 5,
-               title: 'First test health!',
-               date: "11-23-2020",
-               time: "06:00",
-               notes: "First test health",
-               useremail: "daniellerussell714@gmail.com"
-             },
-               "date": "",
-             "notes": "",
-              "sproutid": "",
-              "time": "",
-              "title": "",
-               "useremail": ""
-      })
+            .expect({
+              0: {
+                id: 1,
+                sproutid: 5,
+                title: "First test health!",
+                date: "11-23-2020",
+                time: "06:00",
+                notes: "First test health",
+                useremail: "daniellerussell714@gmail.com",
+              },
+              date: "",
+              notes: "",
+              sproutid: "",
+              time: "",
+              title: "",
+              useremail: "",
+            })
         );
     });
   });
@@ -172,49 +153,42 @@ describe("GET api/health/", () => {
       const testHealth = [
         {
           id: 1,
-           sproutid: "2",
-           title: 'First test health!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test health",
-           useremail: "daniellerussell714@gmail.com"
-         }
-      ]
+          sproutid: "2",
+          title: "First test health!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test health",
+          useremail: "daniellerussell714@gmail.com",
+        },
+      ];
 
-         const testSprout = {
-          
-            id: 2,
-            name: "Christian",
-            age: "10/10/2019",
-            image: "",
-            useremail: "daniellerussell714@gmail.com"
-           
-         }
-  
-         beforeEach('insert sprout', () => {
-          return db
-            .into('sprouts')
-            .insert(testSprout)
-        })
+      const testSprout = {
+        id: 2,
+        name: "Christian",
+        age: "10/10/2019",
+        image: "",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
-       beforeEach('insert health record', () => {
-         return db
-           .into('health')
-           .insert(testHealth)
-       })
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
 
+      beforeEach("insert health record", () => {
+        return db.into("health").insert(testHealth);
+      });
 
       it("responds with 204 and updates the health record", () => {
         const idToUpdate = 1;
-        const updateHealth =  {
+        const updateHealth = {
           id: 1,
-           sproutid: "2",
-           title: 'First test health updated!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test health",
-           useremail: "daniellerussell714@gmail.com"
-         }
+          sproutid: "2",
+          title: "First test health updated!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test health",
+          useremail: "daniellerussell714@gmail.com",
+        };
 
         return supertest(app)
           .patch(`/api/health/${idToUpdate}`)
@@ -226,20 +200,19 @@ describe("GET api/health/", () => {
               .expect({
                 0: {
                   id: 1,
-                   sproutid: 2,
-                   title: 'First test health updated!',
-                   date: "11-23-2020",
-                   time: "06:00",
-                   notes: "First test health",
-                   useremail: "daniellerussell714@gmail.com"
-                 },
+                  sproutid: 2,
+                  title: "First test health updated!",
+                  date: "11-23-2020",
+                  time: "06:00",
+                  notes: "First test health",
+                  useremail: "daniellerussell714@gmail.com",
+                },
                 useremail: "",
                 title: "",
                 date: "",
                 time: "",
                 sproutid: "",
-                notes: ""
-                
+                notes: "",
               })
           );
       });
@@ -249,38 +222,31 @@ describe("GET api/health/", () => {
     const testHealth = [
       {
         id: 1,
-         sproutid: "2",
-         title: 'First test health!',
-         date: "11-23-2020",
-         time: "06:00",
-         notes: "First test health",
-         useremail: "daniellerussell714@gmail.com"
-       }
-    ]
+        sproutid: "2",
+        title: "First test health!",
+        date: "11-23-2020",
+        time: "06:00",
+        notes: "First test health",
+        useremail: "daniellerussell714@gmail.com",
+      },
+    ];
 
-       const testSprout = {
-        
-          id: 2,
-          name: "Christian",
-          age: "10/10/2019",
-          image: "",
-          useremail: "daniellerussell714@gmail.com"
-         
-       }
+    const testSprout = {
+      id: 2,
+      name: "Christian",
+      age: "10/10/2019",
+      image: "",
+      useremail: "daniellerussell714@gmail.com",
+    };
 
-       
     context("Given there are sprouts in the database", () => {
-      beforeEach('insert sprout', () => {
-        return db
-          .into('sprouts')
-          .insert(testSprout)
-      })
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
 
-     beforeEach('insert health record', () => {
-       return db
-         .into('health')
-         .insert(testHealth)
-     })
+      beforeEach("insert health record", () => {
+        return db.into("health").insert(testHealth);
+      });
       it("responds with 204 and removes the health record", () => {
         const idToRemove = 1;
         return supertest(app)
@@ -289,10 +255,16 @@ describe("GET api/health/", () => {
           .then((res) =>
             supertest(app)
               .get(`/api/health/daniellerussell714@gmail.com`)
-              .expect({ useremail: "", title: "", date: "", time: "", notes: "", sproutid: "" })
+              .expect({
+                useremail: "",
+                title: "",
+                date: "",
+                time: "",
+                notes: "",
+                sproutid: "",
+              })
           );
       });
     });
   });
-})
-
+});

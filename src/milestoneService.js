@@ -35,6 +35,6 @@ const MilestoneService = {
 			.where({ id })
 			.update(newMilestoneFields)
 	}
-}
+};
 
 module.exports = MilestoneService

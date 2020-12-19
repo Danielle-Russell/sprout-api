@@ -1,10 +1,10 @@
-const path = require('path')
-const express = require('express')
-const xss = require('xss')
-const SproutService = require('./sproutService')
+const path = require('path');
+const express = require('express');
+const xss = require('xss');
+const SproutService = require('./sproutService');
 
-const router = express.Router()
-const jsonParser = express.json()
+const router = express.Router();
+const jsonParser = express.json();
 
 const sanitizeSprout = sprout => ({
 	...sprout,
@@ -12,16 +12,16 @@ const sanitizeSprout = sprout => ({
 	name: xss(sprout.name),
 	age: xss(sprout.age),
 	image: xss(sprout.image)
-})
+});
 
 router
 	.route('/')
 	.get((req, res, next) => {
 		SproutService.getAllSprouts(req.app.get('db'))
 			.then(Sprouts => {
-				res.json(Sprouts.map(sanitizeSprout))
+				res.json(Sprouts.map(sanitizeSprout));
 			})
-			.catch(next)
+			.catch(next);
 	})
     .post(jsonParser, (req, res, next) => {
 		const { useremail, name, age, image } = req.body
@@ -43,7 +43,7 @@ router
 					.json(sanitizeSprout(sprout))
 			})
 			.catch(next)
-	})
+	});
 
 router
 	.route('/:id')
@@ -73,17 +73,17 @@ router
 			sproutToUpdate
 		)
 			.then(() => {
-				res.status(204).end()
+				res.status(204).end();
 			})
-			.catch(next)
+			.catch(next);
 	})
 	.delete((req, res, next) => {
 		SproutService.deleteSprout(req.app.get('db'), req.params.id)
 			.then(() => {
-				res.status(204).end()
+				res.status(204).end();
 			})
-			.catch(next)
-	})
+			.catch(next);
+	});
 
 	router
 	.route('/:useremail')
@@ -96,13 +96,13 @@ router
 					})
 				}
 				res.sprout = sprout 
-				next() 
+				next();
 			})
-			.catch(next)
+			.catch(next);
 	})
 	.get((req, res, next) => {
-		res.json(sanitizeSprout(res.sprout))
-	})
+		res.json(sanitizeSprout(res.sprout));
+	});
 	
     
 module.exports = router

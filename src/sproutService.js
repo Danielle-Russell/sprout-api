@@ -28,6 +28,6 @@ const SproutService = {
 			.where({ id })
 			.update(newSproutFields)
 	}
-}
+};
 
 module.exports = SproutService

@@ -1,8 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("./config");
-const xss = require('xss')
-
+const xss = require("xss");
 
 const AuthService = {
   serializeUser(user) {
@@ -19,9 +18,9 @@ const AuthService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('users')
-      .returning('*')
-      .then(([user]) => user)
+      .into("users")
+      .returning("*")
+      .then(([user]) => user);
   },
   deleteUser(knex, email) {
     return knex("users").where({ email }).delete();

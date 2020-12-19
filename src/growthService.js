@@ -35,6 +35,6 @@ const GrowthService = {
 			.where({ id })
 			.update(newGrowthFields)
 	}
-}
+};
 
 module.exports = GrowthService

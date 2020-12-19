@@ -101,7 +101,8 @@ describe.only("Auth Endpoints", function () {
             .send(login)
             .expect(200)
             .expect((res) => {
-            expect(res.body).to.have.property("authToken")})
+              expect(res.body).to.have.property("authToken");
+            })
         );
     });
   });

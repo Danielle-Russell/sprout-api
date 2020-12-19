@@ -35,6 +35,6 @@ const HealthService = {
 			.where({ id })
 			.update(newHealthFields)
 	}
-}
+};
 
 module.exports = HealthService

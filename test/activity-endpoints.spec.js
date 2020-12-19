@@ -1,136 +1,117 @@
-const { expect } = require('chai')
-const knex = require('knex')
-const app = require('../src/app')
+const { expect } = require("chai");
+const knex = require("knex");
+const app = require("../src/app");
 
-describe.only('Activity Endpoints', function() {
-    let db
-  
-    before('make knex instance', () => {
-      db = knex({
-        client: 'pg',
-        connection: process.env.TEST_DATABASE_URL,
-      })
-      app.set('db', db)
-    })
-  
-    after('disconnect from db', () => db.destroy())
-  
-    before('cleanup', () => db.raw('TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;'));
+describe.only("Activity Endpoints", function () {
+  let db;
 
-    afterEach('cleanup', () => db.raw('TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;'));
+  before("make knex instance", () => {
+    db = knex({
+      client: "pg",
+      connection: process.env.TEST_DATABASE_URL,
+    });
+    app.set("db", db);
+  });
 
-describe("GET api/activities/", () => {
-    context('Given there are activities in the database', () => {
-    
-            const testActivity = [
-              {
-                id: 1,
-                 sproutid: "2",
-                 title: 'First test activity!',
-                 date: "11-23-2020",
-                 time: "06:00",
-                 notes: "First test activity",
-                 useremail: "daniellerussell714@gmail.com"
-               },
-               {
-                id: 2,
-                 sproutid: "2",
-                 title: 'Second test activity!',
-                 date: "11-23-2020",
-                 time: "06:00",
-                 notes: "Second test activity",
-                 useremail: "indyshadow@gmail.com"
-               }
+  after("disconnect from db", () => db.destroy());
 
-            ]
+  before("cleanup", () =>
+    db.raw("TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;")
+  );
 
-               const testSprout = {
-                
-                  id: 2,
-                  name: "Christian",
-                  age: "10/10/2019",
-                  image: "",
-                  useremail: "daniellerussell714@gmail.com"
-                 
-               }
-        
-               beforeEach('insert sprout', () => {
-                return db
-                  .into('sprouts')
-                  .insert(testSprout)
-              })
- 
-             beforeEach('insert activities', () => {
-               return db
-                 .into('activities')
-                 .insert(testActivity)
-             })
+  afterEach("cleanup", () =>
+    db.raw("TRUNCATE TABLE activities, sprouts RESTART IDENTITY CASCADE;")
+  );
 
+  describe("GET api/activities/", () => {
+    context("Given there are activities in the database", () => {
+      const testActivity = [
+        {
+          id: 1,
+          sproutid: "2",
+          title: "First test activity!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test activity",
+          useremail: "daniellerussell714@gmail.com",
+        },
+        {
+          id: 2,
+          sproutid: "2",
+          title: "Second test activity!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "Second test activity",
+          useremail: "indyshadow@gmail.com",
+        },
+      ];
 
-             it('GET /api/activities responds with 200 and all of the activities', () => {
-                    return supertest(app)
-                       .get('/api/activities')
-                       .expect(200, testActivity)
-                   })
-                   it("GET /api/activities/:useremail responds with 200 and the specified activity", () => {
-                    return supertest(app)
-                      .get("/api/activities/indyshadow@gmail.com")
-                      .expect(200, {
-                        0: {
-                          id: 2,
-                           sproutid: 2,
-                           title: 'Second test activity!',
-                           date: "11-23-2020",
-                           time: "06:00",
-                           notes: "Second test activity",
-                           useremail: "indyshadow@gmail.com"
-                         },
-                        useremail: "",
-                        title: "",
-                        date: "",
-                        time: "",
-                        sproutid: "",
-                        notes: ""
-                      });
-                  });
-               
-        })
-  })
+      const testSprout = {
+        id: 2,
+        name: "Christian",
+        age: "10/10/2019",
+        image: "",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
-  
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
+
+      beforeEach("insert activities", () => {
+        return db.into("activities").insert(testActivity);
+      });
+
+      it("GET /api/activities responds with 200 and all of the activities", () => {
+        return supertest(app).get("/api/activities").expect(200, testActivity);
+      });
+      it("GET /api/activities/:useremail responds with 200 and the specified activity", () => {
+        return supertest(app)
+          .get("/api/activities/indyshadow@gmail.com")
+          .expect(200, {
+            0: {
+              id: 2,
+              sproutid: 2,
+              title: "Second test activity!",
+              date: "11-23-2020",
+              time: "06:00",
+              notes: "Second test activity",
+              useremail: "indyshadow@gmail.com",
+            },
+            useremail: "",
+            title: "",
+            date: "",
+            time: "",
+            sproutid: "",
+            notes: "",
+          });
+      });
+    });
+  });
+
   describe(`POST /api/activities`, () => {
-
     const testSprout = {
-                
       id: 5,
       name: "Christian",
       age: "10/10/2019",
       image: "",
-      useremail: "daniellerussell714@gmail.com"
-     
-   }
+      useremail: "daniellerussell714@gmail.com",
+    };
 
-
-       beforeEach('insert sprout', () => {
-      return db
-        .into('sprouts')
-        .insert(testSprout)
-    })
-
-    
+    beforeEach("insert sprout", () => {
+      return db.into("sprouts").insert(testSprout);
+    });
 
     it(`creates an activity, responding with 201 and the new activity`, () => {
-      const testActivity = 
-        {
-          id: 1,
-           sproutid: "5",
-           title: 'First test activity!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
-           useremail: "daniellerussell714@gmail.com"
-         }
-      
+      const testActivity = {
+        id: 1,
+        sproutid: "5",
+        title: "First test activity!",
+        date: "11-23-2020",
+        time: "06:00",
+        notes: "First test activity",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
       return supertest(app)
         .post("/api/activities")
@@ -147,23 +128,23 @@ describe("GET api/activities/", () => {
         .then((res) =>
           supertest(app)
             .get(`/api/activities/daniellerussell714@gmail.com`)
-            .expect( {
-              "0":   {
-              id: 1,
-               sproutid: 5,
-               title: 'First test activity!',
-               date: "11-23-2020",
-               time: "06:00",
-               notes: "First test activity",
-               useremail: "daniellerussell714@gmail.com"
-             },
-               "date": "",
-             "notes": "",
-              "sproutid": "",
-              "time": "",
-              "title": "",
-               "useremail": ""
-      })
+            .expect({
+              0: {
+                id: 1,
+                sproutid: 5,
+                title: "First test activity!",
+                date: "11-23-2020",
+                time: "06:00",
+                notes: "First test activity",
+                useremail: "daniellerussell714@gmail.com",
+              },
+              date: "",
+              notes: "",
+              sproutid: "",
+              time: "",
+              title: "",
+              useremail: "",
+            })
         );
     });
   });
@@ -172,49 +153,42 @@ describe("GET api/activities/", () => {
       const testActivity = [
         {
           id: 1,
-           sproutid: "2",
-           title: 'First test activity!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
-           useremail: "daniellerussell714@gmail.com"
-         }
-      ]
+          sproutid: "2",
+          title: "First test activity!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test activity",
+          useremail: "daniellerussell714@gmail.com",
+        },
+      ];
 
-         const testSprout = {
-          
-            id: 2,
-            name: "Christian",
-            age: "10/10/2019",
-            image: "",
-            useremail: "daniellerussell714@gmail.com"
-           
-         }
-  
-         beforeEach('insert sprout', () => {
-          return db
-            .into('sprouts')
-            .insert(testSprout)
-        })
+      const testSprout = {
+        id: 2,
+        name: "Christian",
+        age: "10/10/2019",
+        image: "",
+        useremail: "daniellerussell714@gmail.com",
+      };
 
-       beforeEach('insert activities', () => {
-         return db
-           .into('activities')
-           .insert(testActivity)
-       })
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
 
+      beforeEach("insert activities", () => {
+        return db.into("activities").insert(testActivity);
+      });
 
       it("responds with 204 and updates the activity", () => {
         const idToUpdate = 1;
-        const updateActivity =  {
+        const updateActivity = {
           id: 1,
-           sproutid: "2",
-           title: 'First test activity updated!',
-           date: "11-23-2020",
-           time: "06:00",
-           notes: "First test activity",
-           useremail: "daniellerussell714@gmail.com"
-         }
+          sproutid: "2",
+          title: "First test activity updated!",
+          date: "11-23-2020",
+          time: "06:00",
+          notes: "First test activity",
+          useremail: "daniellerussell714@gmail.com",
+        };
 
         return supertest(app)
           .patch(`/api/activities/${idToUpdate}`)
@@ -226,20 +200,19 @@ describe("GET api/activities/", () => {
               .expect({
                 0: {
                   id: 1,
-                   sproutid: 2,
-                   title: 'First test activity updated!',
-                   date: "11-23-2020",
-                   time: "06:00",
-                   notes: "First test activity",
-                   useremail: "daniellerussell714@gmail.com"
-                 },
+                  sproutid: 2,
+                  title: "First test activity updated!",
+                  date: "11-23-2020",
+                  time: "06:00",
+                  notes: "First test activity",
+                  useremail: "daniellerussell714@gmail.com",
+                },
                 useremail: "",
                 title: "",
                 date: "",
                 time: "",
                 sproutid: "",
-                notes: ""
-                
+                notes: "",
               })
           );
       });
@@ -249,38 +222,31 @@ describe("GET api/activities/", () => {
     const testActivity = [
       {
         id: 1,
-         sproutid: "2",
-         title: 'First test activity!',
-         date: "11-23-2020",
-         time: "06:00",
-         notes: "First test activity",
-         useremail: "daniellerussell714@gmail.com"
-       }
-    ]
+        sproutid: "2",
+        title: "First test activity!",
+        date: "11-23-2020",
+        time: "06:00",
+        notes: "First test activity",
+        useremail: "daniellerussell714@gmail.com",
+      },
+    ];
 
-       const testSprout = {
-        
-          id: 2,
-          name: "Christian",
-          age: "10/10/2019",
-          image: "",
-          useremail: "daniellerussell714@gmail.com"
-         
-       }
+    const testSprout = {
+      id: 2,
+      name: "Christian",
+      age: "10/10/2019",
+      image: "",
+      useremail: "daniellerussell714@gmail.com",
+    };
 
-       
     context("Given there are sprouts in the database", () => {
-      beforeEach('insert sprout', () => {
-        return db
-          .into('sprouts')
-          .insert(testSprout)
-      })
+      beforeEach("insert sprout", () => {
+        return db.into("sprouts").insert(testSprout);
+      });
 
-     beforeEach('insert activities', () => {
-       return db
-         .into('activities')
-         .insert(testActivity)
-     })
+      beforeEach("insert activities", () => {
+        return db.into("activities").insert(testActivity);
+      });
       it("responds with 204 and removes the activity", () => {
         const idToRemove = 1;
         return supertest(app)
@@ -289,10 +255,16 @@ describe("GET api/activities/", () => {
           .then((res) =>
             supertest(app)
               .get(`/api/activities/daniellerussell714@gmail.com`)
-              .expect({ useremail: "", title: "", date: "", time: "", notes: "", sproutid: "" })
+              .expect({
+                useremail: "",
+                title: "",
+                date: "",
+                time: "",
+                notes: "",
+                sproutid: "",
+              })
           );
       });
     });
   });
-})
-
+});

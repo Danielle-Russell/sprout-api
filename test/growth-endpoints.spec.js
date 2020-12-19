@@ -46,20 +46,22 @@ describe.only("Growth Endpoints", function () {
         },
       ];
 
-      const testSprouts = [{
-        id: 2,
-        name: "Christian",
-        age: "10/10/2019",
-        image: "",
-        useremail: "daniellerussell714@gmail.com",
-      },
-      {
-        id: 3,
-        name: "Christian",
-        age: "10/10/2019",
-        image: "",
-        useremail: "daniellerussell714@gmail.com",
-      }];
+      const testSprouts = [
+        {
+          id: 2,
+          name: "Christian",
+          age: "10/10/2019",
+          image: "",
+          useremail: "daniellerussell714@gmail.com",
+        },
+        {
+          id: 3,
+          name: "Christian",
+          age: "10/10/2019",
+          image: "",
+          useremail: "daniellerussell714@gmail.com",
+        },
+      ];
 
       beforeEach("insert sprout", () => {
         return db.into("sprouts").insert(testSprouts);
@@ -150,26 +152,24 @@ describe.only("Growth Endpoints", function () {
               title: "",
               useremail: "",
               units: "",
-              number: ""
+              number: "",
             })
         );
     });
   });
   describe(`PATCH /api/growth/:id`, () => {
     context("Given there are growth records in the database", () => {
-
-        const testGrowth = [
-            {
-            id: 1,
-            sproutid: "2",
-            title: "First growth test!",
-            date: "11-23-2020",
-            number: 1,
-            units: "lbs",
-            useremail: "daniellerussell714@gmail.com",
-          }
-        ];
-      
+      const testGrowth = [
+        {
+          id: 1,
+          sproutid: "2",
+          title: "First growth test!",
+          date: "11-23-2020",
+          number: 1,
+          units: "lbs",
+          useremail: "daniellerussell714@gmail.com",
+        },
+      ];
 
       const testSprout = {
         id: 2,
@@ -190,14 +190,14 @@ describe.only("Growth Endpoints", function () {
       it("responds with 204 and updates the growth record", () => {
         const idToUpdate = 1;
         const updateGrowth = {
-            id: 1,
-            sproutid: "2",
-            title: "First growth test updated!",
-            date: "11-23-2020",
-            number: 1,
-            units: "lbs",
-            useremail: "daniellerussell714@gmail.com",
-          }
+          id: 1,
+          sproutid: "2",
+          title: "First growth test updated!",
+          date: "11-23-2020",
+          number: 1,
+          units: "lbs",
+          useremail: "daniellerussell714@gmail.com",
+        };
 
         return supertest(app)
           .patch(`/api/growth/${idToUpdate}`)
@@ -208,20 +208,20 @@ describe.only("Growth Endpoints", function () {
               .get(`/api/growth/daniellerussell714@gmail.com`)
               .expect({
                 0: {
-                    id: 1,
-                    sproutid: 2,
-                    title: "First growth test updated!",
-                    date: "11-23-2020",
-                    number: 1,
-                    units: "lbs",
-                    useremail: "daniellerussell714@gmail.com",
-                  },
+                  id: 1,
+                  sproutid: 2,
+                  title: "First growth test updated!",
+                  date: "11-23-2020",
+                  number: 1,
+                  units: "lbs",
+                  useremail: "daniellerussell714@gmail.com",
+                },
                 useremail: "",
                 title: "",
                 date: "",
                 sproutid: "",
                 number: "",
-                units: ""
+                units: "",
               })
           );
       });
@@ -229,7 +229,7 @@ describe.only("Growth Endpoints", function () {
   });
   describe(`DELETE /api/growth/:id`, () => {
     const testGrowth = [
-        {
+      {
         id: 1,
         sproutid: "2",
         title: "First growth test!",
@@ -237,7 +237,7 @@ describe.only("Growth Endpoints", function () {
         number: 1,
         units: "lbs",
         useremail: "daniellerussell714@gmail.com",
-      }
+      },
     ];
 
     const testSprout = {
@@ -270,7 +270,7 @@ describe.only("Growth Endpoints", function () {
                 date: "",
                 sproutid: "",
                 number: "",
-                units: ""
+                units: "",
               })
           );
       });
